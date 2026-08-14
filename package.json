@@ -1,0 +1,16 @@
+{
+  "name": "vite-rolldown-repro",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "repro": "node scripts/repro.mjs"
+  },
+  "devDependencies": {
+    "rolldown-1-1-4": "npm:rolldown@1.1.4",
+    "rolldown-1-1-5": "npm:rolldown@1.1.5",
+    "rolldown-1-2-3": "npm:rolldown@1.2.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
