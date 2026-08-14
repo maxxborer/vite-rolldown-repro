@@ -33,6 +33,11 @@ const readPackageVersion = (caseDir, name) => {
   return JSON.parse(readFileSync(packagePath, 'utf8')).version;
 };
 
+const readPackageVersionOptional = (caseDir, name) => {
+  const packagePath = join(caseDir, 'node_modules', name, 'package.json');
+  return existsSync(packagePath) ? JSON.parse(readFileSync(packagePath, 'utf8')).version : null;
+};
+
 const collectInitialManifestKeys = (manifest) => {
   const entries = Object.entries(manifest).filter(([, item]) => item.isEntry).map(([key]) => key);
   const visited = new Set();
@@ -45,6 +50,7 @@ const collectInitialManifestKeys = (manifest) => {
   return visited;
 };
 
+const sum = (items, key) => items.reduce((total, item) => total + item[key], 0);
 const results = [];
 
 for (const name of cases) {
@@ -52,7 +58,13 @@ for (const name of cases) {
   const packageJson = join(caseDir, 'package.json');
   if (!existsSync(packageJson)) continue;
 
-  process.stdout.write(`\n=== ${name} ===\n`);
+  const suite = name.startsWith('vue-') ? 'vue' : 'vanilla';
+  const variant = suite === 'vue' ? name.slice(4) : name;
+  const fixtureDir = join(root, suite === 'vue' ? 'vue-fixture' : 'fixture');
+  const sourcePaths = walk(fixtureDir);
+  const sourceBytes = sourcePaths.reduce((total, path) => total + statSync(path).size, 0);
+
+  process.stdout.write(`\n=== ${suite} / ${variant} ===\n`);
   execFileSync('yarn', ['install', '--non-interactive', '--silent'], { cwd: caseDir, stdio: 'inherit' });
 
   const started = performance.now();
@@ -79,13 +91,25 @@ for (const name of cases) {
 
   const jsFiles = files.filter((file) => file.type === 'js');
   const initialJs = jsFiles.filter((file) => initialFiles.has(file.file));
-  const sum = (items, key) => items.reduce((total, item) => total + item[key], 0);
+  const vue = readPackageVersionOptional(caseDir, 'vue');
 
   results.push({
+    suite,
     case: name,
+    variant,
     vite: readPackageVersion(caseDir, 'vite'),
     rolldown: readPackageVersion(caseDir, 'rolldown'),
+    framework: vue ? {
+      vue,
+      pluginVue: readPackageVersionOptional(caseDir, '@vitejs/plugin-vue'),
+      vueRouter: readPackageVersionOptional(caseDir, 'vue-router'),
+      pinia: readPackageVersionOptional(caseDir, 'pinia'),
+    } : null,
     buildMs,
+    source: {
+      files: sourcePaths.length,
+      rawBytes: sourceBytes,
+    },
     metrics: {
       files: files.length,
       totalChunks: jsFiles.length,
@@ -106,10 +130,13 @@ for (const name of cases) {
   });
 }
 
-const rows = results.map(({ case: name, vite, rolldown, buildMs, metrics }) => ({
-  case: name,
+const rows = results.map(({ suite, variant, vite, rolldown, buildMs, source, metrics }) => ({
+  suite,
+  variant,
   vite,
   rolldown,
+  sourceFiles: source.files,
+  sourceSize: formatBytes(source.rawBytes),
   initialChunks: metrics.initialChunks,
   totalChunks: metrics.totalChunks,
   dynamicChunks: metrics.dynamicChunks,

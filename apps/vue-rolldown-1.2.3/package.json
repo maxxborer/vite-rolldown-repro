@@ -1,0 +1,15 @@
+{
+  "name": "case-vue-rolldown-1-2-3",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "vite build" },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "6.0.8",
+    "pinia": "3.0.4",
+    "rolldown": "1.2.3",
+    "vite": "8.2.1",
+    "vue": "3.5.41",
+    "vue-router": "5.2.0"
+  },
+  "resolutions": { "rolldown": "1.2.3" }
+}
