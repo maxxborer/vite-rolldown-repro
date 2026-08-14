@@ -1,0 +1,20 @@
+name: Analyze chunking
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --global yarn@1.22.22
+      - run: yarn analyze
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rolldown-analysis
+          path: results.json
