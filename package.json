@@ -2,9 +2,8 @@
   "name": "vite-rolldown-repro",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "yarn@1.22.22",
   "scripts": {
-    "install:cases": "node scripts/install-cases.mjs",
     "build": "node scripts/analyze.mjs",
     "analyze": "node scripts/analyze.mjs"
   },
