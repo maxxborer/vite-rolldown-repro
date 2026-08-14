@@ -2,13 +2,11 @@
   "name": "vite-rolldown-repro",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.15.0",
   "scripts": {
-    "repro": "node scripts/repro.mjs"
-  },
-  "devDependencies": {
-    "rolldown-1-1-4": "npm:rolldown@1.1.4",
-    "rolldown-1-1-5": "npm:rolldown@1.1.5",
-    "rolldown-1-2-3": "npm:rolldown@1.2.3"
+    "install:cases": "node scripts/install-cases.mjs",
+    "build": "node scripts/analyze.mjs",
+    "analyze": "node scripts/analyze.mjs"
   },
   "engines": {
     "node": ">=22"
