@@ -1,0 +1,10 @@
+{
+  "name": "case-rolldown-1-1-4",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "vite build" },
+  "devDependencies": {
+    "vite": "8.2.1",
+    "rolldown": "1.1.4"
+  }
+}
