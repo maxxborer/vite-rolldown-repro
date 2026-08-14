@@ -1,0 +1,8 @@
+{
+  "name": "case-rolldown-1-2-3-min-size",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "vite build" },
+  "devDependencies": { "vite": "8.2.1" },
+  "resolutions": { "rolldown": "1.2.3" }
+}
